@@ -3,6 +3,7 @@
 #include "crypto.h"
 
 using std::array;
+using std::vector;
 
 void demoDES(){
     // 64 bit key
@@ -25,6 +26,21 @@ void demoAES(){
     auto ciphertext = aes.encrypt(msg);
     auto plaintext = aes.decrypt(ciphertext);
 }
+
+void AES_ECBmode(){
+    std::vector<unsigned char> key = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x1f, 0x2f, 0x3f, 0x4f, 0x5f, 0x6f, 0x7f, 0x8f};
+    string imgPath = "";
+
+
+
+    crypto::AES_CBC aes(key);
+    auto ciphertext = aes.encrypt()
+}
+
+void AES_CBCmode(){
+
+}
+
 
 int main(){
     demoAES();
