@@ -138,23 +138,77 @@ class AES_CBC {
 
 class AES_ECB {
 public:
-    AES_ECB(const vector<unsigned char> &key): crypotor(128), key(key) {
+    AES_ECB(const array<unsigned char, 16> &key): crypotor(128), key(key) {
          crypotor.KeyExpansion(key.data(), subKey.data());
     }
 
     vector <unsigned char> encrypt(const vector<unsigned char> &plaintext) {
         int length = plaintext.size();
+        int rounds = (length % 16 == 0 ? length/16 : length/16+1);
+        int start = 0;
+        int end = 0;
+
+        unsigned char _ciphertext[16] = {0};
+        unsigned char _plaintext[16] = {0};
+
+        vector<unsigned char> out;
+
+        for (int round_idx = 0; round_idx < rounds; ++round_idx) {
+            start = round_idx * 16;
+            end = (round_idx + 1) * 16;
+            if (end > length)
+                end = length;
+
+            memset(_ciphertext, 0 , 16) ;
+            memset(_plaintext, 0, 16);
+            memcpy(_plaintext, plaintext.data()+start, end-start);
+
+            crypotor.EncryptBlock(_plaintext, _ciphertext, subKey.data());
+
+            for (int i = 0; i < end - start; ++i) {
+                out.push_back(_ciphertext[i]);
+            }
+        }
+
+        return out;
 
     }
 
-    vector <unsigned char> decrpyt(const vector<unsigned char> &ciphertext) {
+    vector <unsigned char> decrypt(const vector<unsigned char> &ciphertext) {
+        int length = ciphertext.size();
+        int rounds = (length % 16 == 0 ? length/16: length/16+1);
+        int start = 0;
+        int end = 0;
+
+        unsigned char _ciphertext[16] = {0};
+        unsigned char _plaintext[16] = {0};
+
+        vector <unsigned char> out;
+
+        for (int round_idx = 0; round_idx < rounds; ++round_idx) {
+            start = round_idx * 16;
+            end = (round_idx + 1) * 16;
+            if (end > length)
+                end = length;
+
+            memset(_ciphertext, 0, 16);
+            memset(_plaintext, 0, 16);
+            memcpy(_ciphertext, ciphertext.data()+start, end-start);
+            crypotor.DecryptBlock(_ciphertext, _plaintext, subKey.data());
+
+            for (int i = 0; i < end - start; ++i) {
+                out.push_back(_plaintext[i]);
+            }
+        }
+
+        return out;
 
     }
 
 private:
     AesBasic crypotor;
-    vector<unsigned char> key;
-    vector<unsigned char> subKey;
+    array<unsigned char, 16> key;
+    array<unsigned char, 4*4*11> subKey;
 
 };
 
