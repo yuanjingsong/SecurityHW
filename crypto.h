@@ -30,7 +30,7 @@ private:
 
 class AES_CBC {
     public:
-        AES_CBC(const vector<unsigned char> &key) :cryptor(128), key(key) {
+        AES_CBC(const array<unsigned char, 16> &key) :cryptor(128), key(key) {
 
             //random generate initVec
 
@@ -65,7 +65,7 @@ class AES_CBC {
                 }
 
                 memset(_plaintext, 0, 16);
-                memcpy(_plaintext, plaintext.data()+start, start-end);
+                memcpy(_plaintext, plaintext.data()+start, end-start);
 
                 memset(input, 0, 16);
                 for (int i = 0; i < 16; i++) {
@@ -80,7 +80,7 @@ class AES_CBC {
 
                 cryptor.EncryptBlock(input, _ciphertext, subKey.data());
 
-                for (int i = 0; i < start-end; i++){
+                for (int i = 0; i < end-start; i++){
                     out.push_back(_ciphertext[i]);
                 }
             }
@@ -122,16 +122,40 @@ class AES_CBC {
                     out.push_back(_plaintext[i]);
                 }
 
-                memcpy(input, _ciphertext, 16);
+                memcpy(input, _ciphertext, end-start);
             }
+
+            return out;
         }
 
     private:
         AesBasic cryptor;
         //initVec is used to encrypt the first group plaintext
         unsigned char initVec[16];
-        vector<unsigned char> key;
-        vector<unsigned char> subKey;
+        array<unsigned char, 16> key;
+        array<unsigned char, 4*4*11> subKey;
+};
+
+class AES_ECB {
+public:
+    AES_ECB(const vector<unsigned char> &key): crypotor(128), key(key) {
+         crypotor.KeyExpansion(key.data(), subKey.data());
+    }
+
+    vector <unsigned char> encrypt(const vector<unsigned char> &plaintext) {
+        int length = plaintext.size();
+
+    }
+
+    vector <unsigned char> decrpyt(const vector<unsigned char> &ciphertext) {
+
+    }
+
+private:
+    AesBasic crypotor;
+    vector<unsigned char> key;
+    vector<unsigned char> subKey;
+
 };
 
 
