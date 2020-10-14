@@ -28,9 +28,8 @@ void demoAES(){
     auto plaintext = aes.decrypt(ciphertext);
 }
 
-void AES_CBCMode(){
+void AES_CBCMode(string imgPath){
     array<unsigned char, 16> key = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x1f, 0x2f, 0x3f, 0x4f, 0x5f, 0x6f, 0x7f, 0x8f};
-    string imgPath = "./a.jpg";
 
     cv::Mat img;
     img = cv::imread(imgPath);
@@ -45,8 +44,10 @@ void AES_CBCMode(){
     cv::waitKey();
 
     std::vector<unsigned char> img_data;
-    int img_height = img.cols;
-    int img_width = img.rows;
+    int img_height = img.rows;
+    int img_width = img.cols;
+
+    printf("height %d and width %d\n", img_height, img_width);
 
     for (int y = 0; y < img_height; y++) {
         for (int x = 0; x < img_width; x++) {
@@ -100,9 +101,8 @@ void AES_CBCMode(){
 
 }
 
-void AES_ECBMode(){
+void AES_ECBMode(string imgPath){
     array<unsigned char, 16> key = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x1f, 0x2f, 0x3f, 0x4f, 0x5f, 0x6f, 0x7f, 0x8f};
-    string imgPath = "./a.jpg";
 
     cv::Mat img;
     img = cv::imread(imgPath);
@@ -117,8 +117,8 @@ void AES_ECBMode(){
     cv::waitKey();
 
     std::vector<unsigned char> img_data;
-    int img_height = img.cols;
-    int img_width = img.rows;
+    int img_height = img.rows;
+    int img_width = img.cols;
 
     for (int y = 0; y < img_height; y++) {
         for (int x = 0; x < img_width; x++) {
@@ -173,10 +173,9 @@ void AES_ECBMode(){
 }
 
 
-int main(){
- //   demoAES();
-//demoDES();
-    //AES_CBCMode();
-    AES_ECBMode();
+int main (int argc, char* argv[]){
+    printf("%s", argv[1]);
+    //AES_CBCMode(argv[1]);
+    AES_ECBMode(argv[1]);
     return 0;
 }
